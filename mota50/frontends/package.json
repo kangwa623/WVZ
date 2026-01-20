@@ -1,0 +1,14 @@
+{
+  "name": "mota50-frontend",
+  "version": "1.0.0",
+  "scripts": {
+    "start": "echo 'Expo has been removed. Please set up your preferred framework.'"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@babel/core": "^7.20.0",
+    "babel-plugin-module-resolver": "^5.0.0",
+    "typescript": "~5.8.3"
+  },
+  "private": true
+}
