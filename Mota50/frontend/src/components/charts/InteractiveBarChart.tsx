@@ -165,7 +165,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderColor: colors.border.medium,
     paddingLeft: spacing[2],
-    paddingBottom: spacing[3], // Increased bottom padding for month labels
+    paddingBottom: Platform.OS === 'android' ? spacing[8] : spacing[3], // Increased bottom padding on Android for month labels
     paddingTop: spacing[2], // Top padding to separate from title
     marginTop: spacing[2], // Additional margin from title/tooltip
     position: 'relative', // Ensure proper positioning
@@ -202,6 +202,9 @@ const styles = StyleSheet.create({
     flexShrink: 0, // Prevent bars from shrinking
     marginHorizontal: Platform.OS === 'web' ? spacing[2] : spacing[1], // Spacing between bars
     height: '100%', // Add explicit height
+    ...(Platform.OS === 'android' ? {
+      position: 'relative', // Enable absolute positioning for month labels
+    } : {}),
     ...(Platform.OS === 'web' ? {
       // @ts-ignore - Web-specific style
       display: 'flex',
@@ -239,11 +242,15 @@ const styles = StyleSheet.create({
   monthLabel: {
     ...typography.styles.caption,
     color: colors.text.secondary,
-    marginTop: spacing[3], // Increased spacing from bar to label
+    marginTop: Platform.OS === 'android' ? spacing[4] : spacing[3], // Increased spacing on Android to push labels below x-axis
     fontSize: 11,
     fontWeight: typography.fontWeight.medium,
     textAlign: 'center',
     minWidth: 30, // Ensure labels don't overlap
+    ...(Platform.OS === 'android' && {
+      includeFontPadding: false,
+      textAlignVertical: 'center',
+    }),
   },
 });
 

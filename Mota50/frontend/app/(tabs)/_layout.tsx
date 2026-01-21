@@ -15,6 +15,15 @@ export default function TabsLayout() {
         { name: 'index', title: 'Dashboard', icon: 'dashboard' },
         { name: 'bookings', title: 'Bookings', icon: 'event' },
         { name: 'trips', title: 'Trips', icon: 'directions-car' },
+        { name: 'violations', title: 'Violations', icon: 'warning' },
+        { name: 'profile', title: 'Profile', icon: 'person' },
+      ];
+    } else if (role === 'staff') {
+      return [
+        { name: 'index', title: 'Dashboard', icon: 'dashboard' },
+        { name: 'bookings', title: 'Bookings', icon: 'event' },
+        { name: 'trips', title: 'Trips', icon: 'directions-car' },
+        { name: 'violations', title: 'Violations', icon: 'warning' },
         { name: 'profile', title: 'Profile', icon: 'person' },
       ];
     } else if (role === 'fleet_manager') {
@@ -27,6 +36,14 @@ export default function TabsLayout() {
     } else if (role === 'finance_officer' || role === 'finance') {
       return [
         { name: 'index', title: 'Finance', icon: 'account-balance' },
+        { name: 'reports', title: 'Reports', icon: 'assessment' },
+        { name: 'profile', title: 'Profile', icon: 'person' },
+      ];
+    } else if (role === 'admin') {
+      return [
+        { name: 'index', title: 'Admin', icon: 'admin-panel-settings' },
+        { name: 'fleet', title: 'Fleet', icon: 'local-shipping' },
+        { name: 'bookings', title: 'Bookings', icon: 'event' },
         { name: 'reports', title: 'Reports', icon: 'assessment' },
         { name: 'profile', title: 'Profile', icon: 'person' },
       ];
@@ -72,6 +89,15 @@ export default function TabsLayout() {
           }}
         />
       ))}
+      {/* Explicitly hide fleet tab for drivers and staff */}
+      {(role === 'driver' || role === 'non_driver' || role === 'staff') && (
+        <Tabs.Screen
+          name="fleet"
+          options={{
+            href: null, // Hide from tab bar
+          }}
+        />
+      )}
     </Tabs>
   );
 }
