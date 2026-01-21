@@ -24,7 +24,7 @@ export default function TabsLayout() {
         { name: 'bookings', title: 'Bookings', icon: 'event' },
         { name: 'profile', title: 'Profile', icon: 'person' },
       ];
-    } else if (role === 'finance_officer') {
+    } else if (role === 'finance_officer' || role === 'finance') {
       return [
         { name: 'index', title: 'Finance', icon: 'account-balance' },
         { name: 'reports', title: 'Reports', icon: 'assessment' },

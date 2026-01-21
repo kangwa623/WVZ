@@ -51,7 +51,7 @@ const MOCK_USERS: Record<string, User> = {
     email: 'finance@wvz.org',
     firstName: 'Finance',
     lastName: 'Officer',
-    role: 'finance',
+    role: 'finance_officer',
     createdAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   },

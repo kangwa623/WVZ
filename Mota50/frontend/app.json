@@ -70,7 +70,8 @@
     ],
     "extra": {
       "apiUrl": "http://localhost:8000/api",
-      "environment": "development"
+      "environment": "development",
+      "geminiApiKey": "AIzaSyC56IIN6UASIYqD_YQF3wk7_ePHlA7fM1w"
     },
     "experiments": {
       "typedRoutes": true,
