@@ -15,6 +15,8 @@ export default function TabsLayout() {
         { name: 'index', title: 'Dashboard', icon: 'dashboard' },
         { name: 'bookings', title: 'Bookings', icon: 'event' },
         { name: 'trips', title: 'Trips', icon: 'directions-car' },
+        { name: 'license', title: 'License', icon: 'credit-card' },
+        { name: 'incident', title: 'Incident', icon: 'warning' },
         { name: 'violations', title: 'Violations', icon: 'warning' },
         { name: 'profile', title: 'Profile', icon: 'person' },
       ];
@@ -23,6 +25,8 @@ export default function TabsLayout() {
         { name: 'index', title: 'Dashboard', icon: 'dashboard' },
         { name: 'bookings', title: 'Bookings', icon: 'event' },
         { name: 'trips', title: 'Trips', icon: 'directions-car' },
+        { name: 'license', title: 'License', icon: 'credit-card' },
+        { name: 'incident', title: 'Incident', icon: 'warning' },
         { name: 'violations', title: 'Violations', icon: 'warning' },
         { name: 'profile', title: 'Profile', icon: 'person' },
       ];
@@ -31,6 +35,7 @@ export default function TabsLayout() {
         { name: 'index', title: 'Dashboard', icon: 'dashboard' },
         { name: 'fleet', title: 'Fleet', icon: 'local-shipping' },
         { name: 'bookings', title: 'Bookings', icon: 'event' },
+        { name: 'incidents', title: 'Incidents', icon: 'warning' },
         { name: 'profile', title: 'Profile', icon: 'person' },
       ];
     } else if (role === 'finance_officer' || role === 'finance') {
@@ -44,6 +49,8 @@ export default function TabsLayout() {
         { name: 'index', title: 'Admin', icon: 'admin-panel-settings' },
         { name: 'fleet', title: 'Fleet', icon: 'local-shipping' },
         { name: 'bookings', title: 'Bookings', icon: 'event' },
+        { name: 'incidents', title: 'Incidents', icon: 'warning' },
+        { name: 'licenses', title: 'Licenses', icon: 'credit-card' },
         { name: 'reports', title: 'Reports', icon: 'assessment' },
         { name: 'profile', title: 'Profile', icon: 'person' },
       ];
@@ -93,6 +100,69 @@ export default function TabsLayout() {
       {(role === 'driver' || role === 'non_driver' || role === 'staff') && (
         <Tabs.Screen
           name="fleet"
+          options={{
+            href: null, // Hide from tab bar
+          }}
+        />
+      )}
+      {/* Hide admin's licenses tab from drivers and staff */}
+      {(role === 'driver' || role === 'non_driver' || role === 'staff') && (
+        <Tabs.Screen
+          name="licenses"
+          options={{
+            href: null, // Hide from tab bar
+          }}
+        />
+      )}
+      {/* Hide driver's license tab from admins */}
+      {role === 'admin' && (
+        <Tabs.Screen
+          name="license"
+          options={{
+            href: null, // Hide from tab bar
+          }}
+        />
+      )}
+      {/* Hide reports tab from drivers and staff */}
+      {(role === 'driver' || role === 'non_driver' || role === 'staff') && (
+        <Tabs.Screen
+          name="reports"
+          options={{
+            href: null, // Hide from tab bar
+          }}
+        />
+      )}
+      {/* Hide admin's incidents tab from drivers and staff */}
+      {(role === 'driver' || role === 'non_driver' || role === 'staff') && (
+        <Tabs.Screen
+          name="incidents"
+          options={{
+            href: null, // Hide from tab bar
+          }}
+        />
+      )}
+      {/* Hide driver's incident tab from admins and fleet managers */}
+      {(role === 'admin' || role === 'fleet_manager') && (
+        <Tabs.Screen
+          name="incident"
+          options={{
+            href: null, // Hide from tab bar
+          }}
+        />
+      )}
+      {/* Hide trips tab from admins */}
+      {role === 'admin' && (
+        <Tabs.Screen
+          name="trips"
+          options={{
+            href: null, // Hide from tab bar
+          }}
+        />
+      )}
+      {/* Hide receipts tab from admins */}
+      {role === 'admin' && (
+        <Tabs.Screen
+          name="receipts"
           options={{
             href: null, // Hide from tab bar
           }}

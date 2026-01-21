@@ -12,6 +12,8 @@ import {
   TextInput,
 } from 'react-native';
 import { useRouter } from 'expo-router';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store';
 import * as Location from 'expo-location';
 import * as ImagePicker from 'expo-image-picker';
 import { colors, typography, spacing } from '@/theme';
@@ -31,6 +33,7 @@ interface LocationData {
 
 export default function IncidentScreen() {
   const router = useRouter();
+  const { user } = useSelector((state: RootState) => state.auth);
   const [incidentType, setIncidentType] = useState<IncidentType | null>(null);
   const [description, setDescription] = useState('');
   const [location, setLocation] = useState<LocationData | null>(null);
@@ -149,10 +152,15 @@ export default function IncidentScreen() {
     setSubmitting(true);
 
     try {
+      if (!user) {
+        Alert.alert('Error', 'User information not available');
+        return;
+      }
+
       // In a real app, you would upload photos first and get URLs
       // For MVP, we'll just use the local URIs
       const incidentData = {
-        type: incidentType,
+        type: incidentType!,
         description: description.trim(),
         location: {
           latitude: location.latitude,
@@ -160,6 +168,9 @@ export default function IncidentScreen() {
           address: location.address,
         },
         photos: photos, // In production, these would be uploaded to storage first
+        driverId: user.id,
+        driverName: `${user.firstName} ${user.lastName}`,
+        driverEmail: user.email,
       };
 
       await incidentService.reportIncident(incidentData);

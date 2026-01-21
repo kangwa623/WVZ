@@ -10,11 +10,14 @@ import {
 } from 'react-native';
 import { useCameraPermissions } from 'expo-camera';
 import * as ImagePicker from 'expo-image-picker';
+import { useSelector } from 'react-redux';
+import { RootState } from '@/store';
 import { colors, typography, spacing } from '@/theme';
 import Card from '@/components/common/Card';
 import Button from '@/components/common/Button';
 import Icon from '@/components/common/Icon';
 import licenseService, { LicenseData, ValidationResult } from '@/services/license';
+import licenseStorageService from '@/services/licenseStorage';
 
 // Data Row Component
 const DataRow = ({
@@ -45,6 +48,7 @@ const DataRow = ({
 );
 
 export default function LicenseScreen() {
+  const { user } = useSelector((state: RootState) => state.auth);
   const [permission, requestPermission] = useCameraPermissions();
   const [capturedImage, setCapturedImage] = useState<string | null>(null);
   const [capturedImageBase64, setCapturedImageBase64] = useState<string | null>(null);
@@ -52,6 +56,7 @@ export default function LicenseScreen() {
   const [licenseData, setLicenseData] = useState<LicenseData | null>(null);
   const [validation, setValidation] = useState<ValidationResult | null>(null);
   const [processing, setProcessing] = useState(false);
+  const [saving, setSaving] = useState(false);
   const [message, setMessage] = useState('System initializing...');
   const [messageType, setMessageType] = useState<'info' | 'success' | 'error' | 'warn'>('info');
 
@@ -151,10 +156,33 @@ export default function LicenseScreen() {
       setLicenseData(data);
       setValidation(validationResult);
       
-      if (validationResult.status === 'VERIFIED') {
-        updateMessage(`Validation Result: ${validationResult.message}`, 'success');
+      // Save license to storage for admin review
+      if (user) {
+        try {
+          setSaving(true);
+          await licenseStorageService.saveLicense(
+            user.id,
+            `${user.firstName} ${user.lastName}`,
+            user.email,
+            data,
+            validationResult,
+            capturedImage || undefined
+          );
+          updateMessage(`License scanned and submitted for admin review. ${validationResult.message}`, 
+            validationResult.status === 'VERIFIED' ? 'success' : 'warn');
+        } catch (error: any) {
+          console.error('Error saving license:', error);
+          updateMessage(`Validation Result: ${validationResult.message}`, 
+            validationResult.status === 'VERIFIED' ? 'success' : 'warn');
+        } finally {
+          setSaving(false);
+        }
       } else {
-        updateMessage(`Validation Result: ${validationResult.message}`, 'warn');
+        if (validationResult.status === 'VERIFIED') {
+          updateMessage(`Validation Result: ${validationResult.message}`, 'success');
+        } else {
+          updateMessage(`Validation Result: ${validationResult.message}`, 'warn');
+        }
       }
     } catch (error: any) {
       updateMessage(`Error during processing: ${error.message}`, 'error');

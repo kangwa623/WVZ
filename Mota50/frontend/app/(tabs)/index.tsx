@@ -15,6 +15,7 @@ import InteractiveBarChart from '@/components/charts/InteractiveBarChart';
 import WebMapView from '@/screens/trips/WebMapView';
 import vehicleService from '@/services/vehicles';
 import { Vehicle } from '@/types/vehicle';
+import reportsService from '@/services/reports';
 
 export default function DashboardScreen() {
   const { user } = useSelector((state: RootState) => state.auth);
@@ -948,6 +949,8 @@ function FleetManagerDashboard() {
 }
 
 function FinanceDashboard() {
+  const { user } = useSelector((state: RootState) => state.auth);
+  
   // Financial Data (mock - replace with API call in production)
   const financialData: FinancialData = {
     totalOperationalCost: 185200.50,
@@ -1032,9 +1035,22 @@ Needs to improve delegation and trust building within the maintenance crew.`);
       return;
     }
     
-    // Mock submission - replace with API call in production
-    setAuditStatus('Financial Audit Report submitted to database (mock status: success).');
-    setAuditStatusType('success');
+    try {
+      await reportsService.submitReport({
+        type: 'audit',
+        title: 'Q2 2025 Fleet Financial Audit Summary',
+        content: auditReport,
+        submittedBy: user?.id || 'unknown',
+        submittedByName: user ? `${user.firstName} ${user.lastName}` : 'Finance Officer',
+        financialData,
+      });
+      setAuditStatus('Financial Audit Report submitted successfully and sent to admin.');
+      setAuditStatusType('success');
+      setAuditSubmitVisible(false);
+    } catch (error: any) {
+      setAuditStatus(`Failed to submit report: ${error.message}`);
+      setAuditStatusType('error');
+    }
   };
 
   const handleGenerateEPR = async () => {
@@ -1083,9 +1099,27 @@ Needs to improve delegation and trust building within the maintenance crew.`);
       return;
     }
     
-    // Mock submission - replace with API call in production
-    setEprStatus(`Report for ${eprName} submitted to database (mock status: success).`);
-    setEprStatusType('success');
+    try {
+      await reportsService.submitReport({
+        type: 'epr',
+        title: `Performance and Resource Management Report - ${eprName}`,
+        content: eprReport,
+        submittedBy: user?.id || 'unknown',
+        submittedByName: user ? `${user.firstName} ${user.lastName}` : 'Finance Officer',
+        financialData,
+        eprDetails: {
+          name: eprName,
+          rank: eprRank,
+          period: eprPeriod,
+        },
+      });
+      setEprStatus(`Report for ${eprName} submitted successfully and sent to admin.`);
+      setEprStatusType('success');
+      setEprSubmitVisible(false);
+    } catch (error: any) {
+      setEprStatus(`Failed to submit report: ${error.message}`);
+      setEprStatusType('error');
+    }
   };
 
 
@@ -1918,14 +1952,11 @@ function AdminDashboard() {
           </ScrollView>
         </Card>
 
-        <Card style={styles.fuelChartCard}>
-          <Text style={styles.sectionTitle}>Monthly Fuel Consumption</Text>
-          <InteractiveBarChart
-            data={financialData.monthlyFuelConsumption.map(item => item.consumption)}
-            labels={financialData.monthlyFuelConsumption.map(item => item.month)}
-            height={200}
-          />
-        </Card>
+        <InteractiveBarChart
+          title="Monthly Fuel Consumption (Liters)"
+          data={financialData.monthlyFuelConsumption}
+          height={Platform.OS === 'web' ? 300 : 280}
+        />
       </View>
 
       <Card style={styles.financeCard}>
